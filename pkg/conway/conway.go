@@ -7,7 +7,8 @@ import (
 )
 
 type conwayCell struct {
-	Age             int
+	TimeAlive       int
+	TimeDead        int
 	Alive           bool
 	previouslyAlive bool
 }
@@ -54,20 +55,24 @@ func Step(e *ConwayEngine) {
 				// Cell dies
 				if neighbors < 2 || neighbors > 3 {
 					e.board[i][j].Alive = false
-					e.board[i][j].Age = 0
+					e.board[i][j].TimeAlive = 0
 				}
 
 				// Cells stays alive
 				if neighbors >= 2 && neighbors <= 3 {
 					e.board[i][j].Alive = true
-					e.board[i][j].Age++
+					e.board[i][j].TimeAlive++
+					e.board[i][j].TimeDead = 0
 				}
 
 			} else { // Dead Cell rules
 				if neighbors == 3 {
+					// Cell comes alive
 					e.board[i][j].Alive = true
 				} else {
+					// Cell stays dead
 					e.board[i][j].Alive = false
+					e.board[i][j].TimeDead++
 				}
 			}
 		}
@@ -100,7 +105,8 @@ func Reset(e *ConwayEngine) {
 	e.Step = 0
 	for i := 0; i < e.BoardWidth; i++ {
 		for j := 0; j < e.BoardHeight; j++ {
-			e.board[i][j].Age = 0
+			e.board[i][j].TimeAlive = 0
+			e.board[i][j].TimeDead = 0
 			e.board[i][j].Alive = false
 			e.board[i][j].previouslyAlive = false
 		}
@@ -111,8 +117,12 @@ func CellAlive(e *ConwayEngine, x, y int) bool {
 	return e.board[x][y].Alive
 }
 
-func CellAge(e *ConwayEngine, x, y int) int {
-	return e.board[x][y].Age
+func CellTimeAlive(e *ConwayEngine, x, y int) int {
+	return e.board[x][y].TimeAlive
+}
+
+func CellTimeDead(e *ConwayEngine, x, y int) int {
+	return e.board[x][y].TimeDead
 }
 
 func livingNeighbors(e *ConwayEngine, x int, y int) int {
