@@ -7,9 +7,9 @@ import (
 )
 
 type conwayCell struct {
-	CurrentlyAlive  bool
-	PreviouslyAlive bool
 	Age             int
+	Alive           bool
+	previouslyAlive bool
 }
 
 type ConwayEngine struct {
@@ -33,7 +33,7 @@ func CreateEngine(width, height int) ConwayEngine {
 func PrintBoard(e *ConwayEngine) {
 	for i := 0; i < e.BoardHeight; i++ {
 		for j := 0; j < e.BoardWidth; j++ {
-			if e.board[j][i].CurrentlyAlive {
+			if e.board[j][i].Alive {
 				fmt.Print("0")
 			} else {
 				fmt.Print(" ")
@@ -49,24 +49,24 @@ func Step(e *ConwayEngine) {
 		for j := 0; j < e.BoardHeight; j++ {
 			var neighbors = livingNeighbors(e, i, j)
 
-			if e.board[i][j].PreviouslyAlive { // Living Cell rules
+			if e.board[i][j].previouslyAlive { // Living Cell rules
 				// Cell dies
 				if neighbors < 2 || neighbors > 3 {
-					e.board[i][j].CurrentlyAlive = false
+					e.board[i][j].Alive = false
 					e.board[i][j].Age = 0
 				}
 
 				// Cells stays alive
 				if neighbors >= 2 && neighbors <= 3 {
-					e.board[i][j].CurrentlyAlive = true
+					e.board[i][j].Alive = true
 					e.board[i][j].Age++
 				}
 
 			} else { // Dead Cell rules
 				if neighbors == 3 {
-					e.board[i][j].CurrentlyAlive = true
+					e.board[i][j].Alive = true
 				} else {
-					e.board[i][j].CurrentlyAlive = false
+					e.board[i][j].Alive = false
 				}
 			}
 		}
@@ -74,7 +74,7 @@ func Step(e *ConwayEngine) {
 
 	for i := 0; i < e.BoardWidth; i++ {
 		for j := 0; j < e.BoardHeight; j++ {
-			e.board[i][j].PreviouslyAlive = e.board[i][j].CurrentlyAlive
+			e.board[i][j].previouslyAlive = e.board[i][j].Alive
 		}
 	}
 }
@@ -86,15 +86,15 @@ func Randomize(e *ConwayEngine, fillPercent int) {
 	for i := 0; i < e.BoardWidth; i++ {
 		for j := 0; j < e.BoardHeight; j++ {
 			if r.Intn(100) > (100 - fillPercent) {
-				e.board[i][j].PreviouslyAlive = true
-				e.board[i][j].CurrentlyAlive = true
+				e.board[i][j].previouslyAlive = true
+				e.board[i][j].Alive = true
 			}
 		}
 	}
 }
 
 func CellAlive(e *ConwayEngine, x, y int) bool {
-	return e.board[x][y].CurrentlyAlive
+	return e.board[x][y].Alive
 }
 
 func CellAge(e *ConwayEngine, x, y int) int {
@@ -105,42 +105,42 @@ func livingNeighbors(e *ConwayEngine, x int, y int) int {
 	var alive = 0
 
 	// top left
-	if x > 0 && y > 0 && e.board[x-1][y-1].PreviouslyAlive {
+	if x > 0 && y > 0 && e.board[x-1][y-1].previouslyAlive {
 		alive++
 	}
 
 	// top
-	if y > 0 && e.board[x][y-1].PreviouslyAlive {
+	if y > 0 && e.board[x][y-1].previouslyAlive {
 		alive++
 	}
 
 	// top right
-	if x < e.BoardWidth-1 && y > 0 && e.board[x+1][y-1].PreviouslyAlive {
+	if x < e.BoardWidth-1 && y > 0 && e.board[x+1][y-1].previouslyAlive {
 		alive++
 	}
 
 	// left
-	if x > 0 && e.board[x-1][y].PreviouslyAlive {
+	if x > 0 && e.board[x-1][y].previouslyAlive {
 		alive++
 	}
 
 	// right
-	if x < e.BoardWidth-1 && e.board[x+1][y].PreviouslyAlive {
+	if x < e.BoardWidth-1 && e.board[x+1][y].previouslyAlive {
 		alive++
 	}
 
 	// bottom left
-	if x > 0 && y < e.BoardHeight-1 && e.board[x-1][y+1].PreviouslyAlive {
+	if x > 0 && y < e.BoardHeight-1 && e.board[x-1][y+1].previouslyAlive {
 		alive++
 	}
 
 	// bottom
-	if y < e.BoardHeight-1 && e.board[x][y+1].PreviouslyAlive {
+	if y < e.BoardHeight-1 && e.board[x][y+1].previouslyAlive {
 		alive++
 	}
 
 	// bottom right
-	if x < e.BoardWidth-1 && y < e.BoardHeight-1 && e.board[x+1][y+1].PreviouslyAlive {
+	if x < e.BoardWidth-1 && y < e.BoardHeight-1 && e.board[x+1][y+1].previouslyAlive {
 		alive++
 	}
 
