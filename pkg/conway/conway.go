@@ -96,6 +96,17 @@ func Randomize(e *ConwayEngine, fillPercent int) {
 	}
 }
 
+func Reset(e *ConwayEngine) {
+	e.Step = 0
+	for i := 0; i < e.BoardWidth; i++ {
+		for j := 0; j < e.BoardHeight; j++ {
+			e.board[i][j].Age = 0
+			e.board[i][j].Alive = false
+			e.board[i][j].previouslyAlive = false
+		}
+	}
+}
+
 func CellAlive(e *ConwayEngine, x, y int) bool {
 	return e.board[x][y].Alive
 }

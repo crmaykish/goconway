@@ -15,8 +15,9 @@ const cellPixels = 20
 const cellBorder = 2
 const windowWidth = boardWidth * cellPixels
 const windowHeight = boardHeight * cellPixels
-const speed = 8
+const speed = 10
 const fill = 25
+const stepLimit = 512
 
 var running = true
 
@@ -68,8 +69,14 @@ func run() int {
 		renderer.Present()
 		sdl.Delay(1000 / speed)
 
-		// Process the next step in the game
-		conway.Step(&engine)
+		if engine.Step == stepLimit {
+			sdl.Delay(1000)
+			conway.Reset(&engine)
+			conway.Randomize(&engine, fill)
+		} else {
+			// Process the next step in the game
+			conway.Step(&engine)
+		}
 
 		for event := sdl.PollEvent(); event != nil; event = sdl.PollEvent() {
 			switch event.(type) {
