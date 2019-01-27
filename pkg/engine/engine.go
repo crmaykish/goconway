@@ -6,13 +6,19 @@ import (
 	"time"
 )
 
-var BoardWidth = 20
-var BoardHeight = 15
-
-type Cell struct {
+type conwayCell struct {
 	CurrentlyAlive  bool
 	PreviouslyAlive bool
 }
+
+type ConwayEngine struct {
+	BoardWidth  int
+	BoardHeight int
+	cells       [][]conwayCell
+}
+
+var BoardWidth = 20
+var BoardHeight = 15
 
 func InitBoard(x, y int) [][]Cell {
 	BoardWidth = x
