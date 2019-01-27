@@ -9,17 +9,68 @@ import (
 	"github.com/veandco/go-sdl2/sdl"
 )
 
-const boardWidth = 60
-const boardHeight = 40
-const cellPixels = 20
-const cellBorder = 2
+const boardWidth = 64
+const boardHeight = 48
+const cellPixels = 8
+const cellBorder = 1
 const windowWidth = boardWidth * cellPixels
 const windowHeight = boardHeight * cellPixels
 const speed = 8
-const fill = 15
+const fill = 20
 const stepLimit = 512
 
+// Background color (really the border colors)
+const bgr, bgg, bgb uint8 = 0x0F, 0x0F, 0x0F
+
+// Dead cell colors
+const dStartR, dStartG, dStartB uint8 = 0x0F, 0x41, 0x4F
+const dEndR, dEndG, dEndB uint8 = 0x02, 0x2A, 0x35
+
+// Live cell colors
+const lStartR, lStartG, lStartB uint8 = 0xCA, 0xEA, 0x9C
+const lEndR, lEndG, lEndB uint8 = 0x4D, 0x75, 0x14
+
 var running = true
+
+func colorChannelValue(age int, start, end uint8) uint8 {
+	var colorChannelValue uint8
+
+	if start < end {
+		// If channel increases with age
+		if age >= (int(end) - int(start)) {
+			colorChannelValue = end
+		} else {
+			colorChannelValue = start + uint8(age) // losing data by converting int to uint8, but the range checks should protect it
+		}
+	} else {
+		// If channel decreases with age
+		if age >= (int(start) - int(end)) {
+			colorChannelValue = end
+		} else {
+			colorChannelValue = start - uint8(age)
+		}
+	}
+
+	return colorChannelValue
+}
+
+func livingCellColor(age int) (uint8, uint8, uint8) {
+	// TODO: smooth the transition from all colors to take equal time
+
+	var red = colorChannelValue(age, lStartR, lEndR)
+	var green = colorChannelValue(age, lStartG, lEndG)
+	var blue = colorChannelValue(age, lStartB, lEndB)
+
+	return red, green, blue
+}
+
+func deadCellColor(age int) (uint8, uint8, uint8) {
+	var red = colorChannelValue(age, dStartR, dEndR)
+	var green = colorChannelValue(age, dStartG, dEndG)
+	var blue = colorChannelValue(age, dStartB, dEndB)
+
+	return red, green, blue
+}
 
 func run() int {
 	var window *sdl.Window
@@ -51,7 +102,7 @@ func run() int {
 		renderer.Clear()
 
 		var background = sdl.Rect{0, 0, windowWidth, windowHeight}
-		renderer.SetDrawColor(0x1A, 0x1A, 0x1A, 255)
+		renderer.SetDrawColor(bgr, bgg, bgb, 255)
 		renderer.FillRect(&background)
 
 		for i := 0; i < engine.BoardWidth; i++ {
@@ -93,36 +144,6 @@ func run() int {
 	}
 
 	return 0
-}
-
-func livingCellColor(age int) (uint8, uint8, uint8) {
-	var red = 0
-	var green = 0
-	var blue = 0
-
-	if age >= 255 {
-		red = 255
-		green = 0
-	} else {
-		red = age
-		green = 255 - age
-	}
-
-	return uint8(red), uint8(green), uint8(blue)
-}
-
-func deadCellColor(age int) (uint8, uint8, uint8) {
-	var red = 0
-	var green = 0
-	var blue = 0
-
-	if age >= 150 {
-		blue = 0
-	} else {
-		blue = 150 - age
-	}
-
-	return uint8(red), uint8(green), uint8(blue)
 }
 
 func main() {
