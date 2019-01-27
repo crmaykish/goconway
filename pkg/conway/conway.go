@@ -13,6 +13,7 @@ type conwayCell struct {
 }
 
 type ConwayEngine struct {
+	Step        int
 	BoardWidth  int
 	BoardHeight int
 	board       [][]conwayCell
@@ -77,6 +78,8 @@ func Step(e *ConwayEngine) {
 			e.board[i][j].previouslyAlive = e.board[i][j].Alive
 		}
 	}
+
+	e.Step++
 }
 
 func Randomize(e *ConwayEngine, fillPercent int) {
