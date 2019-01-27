@@ -1,0 +1,26 @@
+{
+    "board": {
+        "width": 64,
+        "height": 48
+    },
+    "cells": {
+        "sizeInPixels": 10,
+        "borderThickness": 1
+    },
+    "game": {
+        "speed": 10,
+        "randomFillPercent": 20,
+        "stepLimit": 512
+    },
+    "colors": {
+        "borderColor": "0F0F0F",
+        "deadCells": {
+            "startColor": "0F414F",
+            "endColor": "022A35"
+        },
+        "livingCells": {
+            "startColor": "CAEA9C",
+            "endColor": "4D7514"
+        }
+    }
+}
