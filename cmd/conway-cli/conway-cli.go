@@ -4,28 +4,26 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/crmaykish/goconway/pkg/engine"
+	"github.com/crmaykish/goconway/pkg/conway"
 )
 
+var boardWidth = 15
+var boardHeight = 10
 var speed = 2
 var fillPercent = 30
 
 func main() {
 	fmt.Println("Starting Game of Life...")
 
-	var board = make([][]engine.Cell, engine.BoardWidth)
+	engine := conway.CreateEngine(boardWidth, boardHeight)
 
-	for i := 0; i < engine.BoardWidth; i++ {
-		board[i] = make([]engine.Cell, engine.BoardHeight)
-	}
+	conway.Randomize(&engine, fillPercent)
 
-	engine.Randomize(board, fillPercent)
-
-	engine.PrintBoard(board)
+	conway.PrintBoard(&engine)
 
 	for {
-		engine.Step(board)
-		engine.PrintBoard(board)
+		conway.Step(&engine)
+		conway.PrintBoard(&engine)
 		time.Sleep(time.Millisecond * time.Duration(1000/speed))
 	}
 }
