@@ -9,13 +9,16 @@ import (
 	"github.com/veandco/go-sdl2/sdl"
 )
 
-const boardWidth = 500
-const boardHeight = 300
-const cellPixels = 4
+const boardWidth = 50
+const boardHeight = 30
+const cellPixels = 20
+const cellBorder = 2
 const windowWidth = boardWidth * cellPixels
 const windowHeight = boardHeight * cellPixels
 const speed = 8
-const fill = 10
+const fill = 25
+
+var running = true
 
 func run() int {
 	var window *sdl.Window
@@ -42,18 +45,20 @@ func run() int {
 	engine := conway.CreateEngine(boardWidth, boardHeight)
 	conway.Randomize(&engine, fill)
 
-	for {
+	// Main game loop
+	for running {
 		renderer.Clear()
 
 		var background = sdl.Rect{0, 0, windowWidth, windowHeight}
-		renderer.SetDrawColor(0x00, 0x40, 0x11, 255)
+		renderer.SetDrawColor(0x1A, 0x1A, 0x1A, 255)
 		renderer.FillRect(&background)
 
 		for i := 0; i < engine.BoardWidth; i++ {
 			for j := 0; j < boardHeight; j++ {
-				if conway.CellAliveAt(&engine, i, j) {
-					var rect = sdl.Rect{int32(i * cellPixels), int32(j * cellPixels), cellPixels, cellPixels}
-					renderer.SetDrawColor(0x4F, 0x9F, 0x64, 255)
+				if conway.CellAlive(&engine, i, j) {
+					var rect = sdl.Rect{int32(i*cellPixels) + cellBorder, int32(j*cellPixels) + cellBorder, cellPixels - (2 * cellBorder), cellPixels - (2 * cellBorder)}
+					var r, g, b = cellColor(conway.CellAge(&engine, i, j))
+					renderer.SetDrawColor(r, g, b, 255)
 					renderer.FillRect(&rect)
 				}
 			}
@@ -65,7 +70,33 @@ func run() int {
 
 		// Process the next step in the game
 		conway.Step(&engine)
+
+		for event := sdl.PollEvent(); event != nil; event = sdl.PollEvent() {
+			switch event.(type) {
+			case *sdl.QuitEvent:
+				running = false
+				break
+			}
+		}
 	}
+
+	return 0
+}
+
+func cellColor(age int) (uint8, uint8, uint8) {
+	var red = 0
+	var green = 0
+	var blue = 0
+
+	if age >= 255 {
+		red = 255
+		green = 0
+	} else {
+		red = age
+		green = 255 - age
+	}
+
+	return uint8(red), uint8(green), uint8(blue)
 }
 
 func main() {

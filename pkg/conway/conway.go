@@ -9,6 +9,7 @@ import (
 type conwayCell struct {
 	CurrentlyAlive  bool
 	PreviouslyAlive bool
+	Age             int
 }
 
 type ConwayEngine struct {
@@ -52,11 +53,13 @@ func Step(e *ConwayEngine) {
 				// Cell dies
 				if neighbors < 2 || neighbors > 3 {
 					e.board[i][j].CurrentlyAlive = false
+					e.board[i][j].Age = 0
 				}
 
-				// Cells lives
+				// Cells stays alive
 				if neighbors >= 2 && neighbors <= 3 {
 					e.board[i][j].CurrentlyAlive = true
+					e.board[i][j].Age++
 				}
 
 			} else { // Dead Cell rules
@@ -90,8 +93,12 @@ func Randomize(e *ConwayEngine, fillPercent int) {
 	}
 }
 
-func CellAliveAt(e *ConwayEngine, x, y int) bool {
+func CellAlive(e *ConwayEngine, x, y int) bool {
 	return e.board[x][y].CurrentlyAlive
+}
+
+func CellAge(e *ConwayEngine, x, y int) int {
+	return e.board[x][y].Age
 }
 
 func livingNeighbors(e *ConwayEngine, x int, y int) int {
