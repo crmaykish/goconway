@@ -75,7 +75,7 @@ func run() int {
 
 	// Create the main SDL window
 	window, err := sdl.CreateWindow("Conway's Game of Life", sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
-		windowWidth, windowHeight, sdl.WINDOW_SHOWN)
+		windowWidth, windowHeight, sdl.WINDOW_SHOWN | sdl.WINDOW_FULLSCREEN_DESKTOP)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to create window: %s\n", err)
 		return 1

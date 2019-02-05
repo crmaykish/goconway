@@ -1,14 +1,14 @@
 {
     "board": {
-        "width": 64,
-        "height": 48
+        "width": 256,
+        "height": 144
     },
     "cells": {
         "sizeInPixels": 10,
         "borderThickness": 1
     },
     "game": {
-        "speed": 10,
+        "speed": 20,
         "randomFillPercent": 20,
         "stepLimit": 512
     },
