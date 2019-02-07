@@ -10,3 +10,7 @@
 
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
+
+# don't include executables if they end up in the source
+conway-sdl
+conway-cli
