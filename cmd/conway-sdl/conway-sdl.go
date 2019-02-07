@@ -70,12 +70,19 @@ func run() int {
 	var window *sdl.Window
 	var renderer *sdl.Renderer
 
-	var windowWidth = int32(conf.Board.Width * conf.Cells.SizeInPixels)
-	var windowHeight = int32(conf.Board.Height * conf.Cells.SizeInPixels)
+	var windowWidth = int32(conf.Display.Resolution.Width)
+	var windowHeight = int32(conf.Display.Resolution.Height)
 
 	// Create the main SDL window
+
+	var sdlFlags uint32 = sdl.WINDOW_SHOWN
+
+	if conf.Display.Fullscreen {
+		sdlFlags |= sdl.WINDOW_FULLSCREEN_DESKTOP
+	}
+
 	window, err := sdl.CreateWindow("Conway's Game of Life", sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED,
-		windowWidth, windowHeight, sdl.WINDOW_SHOWN | sdl.WINDOW_FULLSCREEN_DESKTOP)
+		windowWidth, windowHeight, sdlFlags)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Failed to create window: %s\n", err)
 		return 1
@@ -91,7 +98,11 @@ func run() int {
 	defer renderer.Destroy()
 
 	// Create the game engine
-	engine := conway.CreateEngine(conf.Board.Width, conf.Board.Height)
+
+	var boardWidth = conf.Display.Resolution.Width / conf.Cells.SizeInPixels
+	var boardHeight = conf.Display.Resolution.Height / conf.Cells.SizeInPixels
+
+	engine := conway.CreateEngine(boardWidth, boardHeight)
 	conway.Randomize(&engine, conf.Game.RandomFillPercent)
 
 	// Main game loop

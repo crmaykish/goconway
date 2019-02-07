@@ -1,14 +1,17 @@
 {
-    "board": {
-        "width": 256,
-        "height": 144
+    "display" : {
+        "fullscreen": true,
+        "resolution" : {
+            "width": 2560,
+            "height": 1440
+        }
     },
     "cells": {
-        "sizeInPixels": 10,
-        "borderThickness": 1
+        "sizeInPixels": 20,
+        "borderThickness": 0
     },
     "game": {
-        "speed": 20,
+        "speed": 10,
         "randomFillPercent": 20,
         "stepLimit": 512
     },

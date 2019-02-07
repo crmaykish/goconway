@@ -5,9 +5,14 @@ import (
 	"strconv"
 )
 
-type Board struct {
+type Resolution struct {
 	Width  int
 	Height int
+}
+
+type Display struct {
+	Fullscreen bool
+	Resolution Resolution
 }
 
 type Cells struct {
@@ -33,10 +38,10 @@ type Colors struct {
 }
 
 type ConwayConfig struct {
-	Board  Board
-	Cells  Cells
-	Game   Game
-	Colors Colors
+	Display Display
+	Cells   Cells
+	Game    Game
+	Colors  Colors
 }
 
 func LoadConfig(jsonFile []byte) ConwayConfig {
